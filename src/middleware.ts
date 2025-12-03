@@ -1,37 +1,23 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt" 
+import { NextResponse } from "next/server" 
+import type { NextRequest } from "next/server" 
+const secret = process.env.AUTH_SECRET
+ const roleBasedRoutes: Record<string, RegExp[]> = { ADMIN: [/^\/dashboard\/admin/], INVESTOR: [/^\/dashboard\/investor/], } 
 
-export function middleware(req: NextRequest) {
-  const token = req.cookies.get("next-auth.session-token") 
-    || req.cookies.get("__Secure-next-auth.session-token");
 
-  // Not logged in → redirect
-  if (!token) {
-    return NextResponse.redirect(new URL("/signin", req.url));
-  }
+ export async function middleware(req: NextRequest) { const token = await getToken({ req, secret }) 
 
-  const pathname = req.nextUrl.pathname;
+ // if no session, redirect to login 
 
-  // Simple checks (faster than regex)
-  const isAdminRoute = pathname.startsWith("/dashboard/admin");
-  const isInvestorRoute = pathname.startsWith("/dashboard/investor");
+ if (!token) { return NextResponse.redirect(new URL("/signin", req.url)) } const role = token.role || "guest" 
 
-  // Extract the role from cookie header (decoded JWT)
-  const role = req.cookies.get("role")?.value || "guest";
+ const pathname = req.nextUrl.pathname // check allowed routes 
 
-  // ❌ Admin trying to access investor route
-  if (isAdminRoute && role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/signin", req.url));
-  }
+ const allowedRoutes = roleBasedRoutes[role] 
 
-  // ❌ Investor trying to access admin route
-  if (isInvestorRoute && role !== "INVESTOR") {
-    return NextResponse.redirect(new URL("/signin", req.url));
-  }
-
-  return NextResponse.next();
-}
-
-export const config = {
-  matcher: ["/dashboard/:path*"],
-};
+// if user’s role doesn’t have access to this path 
+if ( allowedRoutes && !allowedRoutes.some((route) => route.test(pathname)) ) { 
+  // logout user if unauthorized return 
+  NextResponse.redirect(new URL("/signin", req.url)) } return NextResponse.next() }
+  
+  export const config = { matcher: ["/dashboard/:path*"], }

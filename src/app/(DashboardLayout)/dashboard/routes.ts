@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth"
 
 export async function getDashboardRoutes() {
   const session = await getServerSession(authOptions)
+  // const role = "ADMIN"
   const role = session?.user.role || "guest"
 
   switch (role) {
@@ -21,9 +22,8 @@ export async function getDashboardRoutes() {
               { title: "প্রকল্পের অগ্রগতি আপডেট করুন", url: "/dashboard/admin/update-project-progress" },
               { title: "পেমেন্ট পদ্ধতি যোগ করুন", url: "/dashboard/admin/add-payment-method" },
               { title: "পেমেন্ট পদ্ধতি আপডেট করুন", url: "/dashboard/admin/update-payment-method" },
-              { title: "ইউজারদের পেমেন্ট গুলু দেখুন", url: "/dashboard/admin/all-payments" },
-              { title: "KYC ভেরিফিকেশন লিস্ট ", url: "/dashboard/admin/manage-kyc" },
-          
+              { title: "ইউজারদের পেমেন্ট গুলু দেখুন", url: "/dashboard/admin/all-payments" }, 
+              { title: "বিনিয়োগকারীদের বার্তা", url: "/dashboard/Conversation" },
             ],
           },
         ],
@@ -41,6 +41,7 @@ export async function getDashboardRoutes() {
               { title: "আপনার বিনিয়োগ", url: "/dashboard/investor/my-investment" },
               { title: "KYC ভেরিফিকেশন করুন", url: "/dashboard/investor/kyc-verification" },
               { title: "আপনার প্রোফাইল", url: "/dashboard/investor/my-profile" },
+              { title: "হেল্পলাইন", url: "/dashboard/Conversation" },
             ],
           },
         ],
