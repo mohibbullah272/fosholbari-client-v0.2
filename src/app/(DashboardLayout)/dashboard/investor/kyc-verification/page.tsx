@@ -96,19 +96,19 @@ const KYCVerification = () => {
   
     // Validation
     if (!userImage) {
-      console.log('Validation failed: userImage is empty');
+   
       setError('আপনার ছবি আপলোড করা বাধ্যতামূলক');
       return;
     }
   
     if (!documentImage) {
-      console.log('Validation failed: documentImage is empty');
+   
       setError('ডকুমেন্ট ছবি আপলোড করা বাধ্যতামূলক');
       return;
     }
   
     if (!documentNumber) {
-      console.log('Validation failed: documentNumber is empty');
+
       setError('ডকুমেন্ট নম্বর প্রদান করা বাধ্যতামূলক');
       return;
     }
@@ -144,7 +144,7 @@ const KYCVerification = () => {
         }
       }
   
-      console.log('Submitting KYC data to backend:', submitData);
+     
   
       const result = await kycApi.createKYC(submitData);
   

@@ -40,13 +40,13 @@ export function useConversation(session: UserSession | null) {
     // Handlers (stable refs not required because we remove by reference on cleanup)
     const handleAuthenticated = (data: any) => {
       setIsSocketConnected(true);
-      console.log('Socket authenticated successfully', data);
+  
       // server auto-joins user's conversation rooms on authenticate; no need to join client-side
     };
 
     const handleDisconnected = (data: any) => {
       setIsSocketConnected(false);
-      console.log('Socket disconnected', data);
+ 
     };
 
     const handleConnectError = (error: any) => {
@@ -66,7 +66,7 @@ export function useConversation(session: UserSession | null) {
     };
 
     const handleConversationCreated = (data: any) => {
-      console.log('Conversation created via socket:', data);
+      
       if (data?.conversation?.userId === parseInt(session.id)) {
         toast.success('Conversation created successfully');
         router.push(`/dashboard/Conversation/${data.conversation.id}`);
@@ -114,8 +114,7 @@ export function useConversation(session: UserSession | null) {
         const idKey = incomingIdKey || fallbackIdKey;
 
         if (messageIdsProcessed.current.has(idKey)) {
-          // already handled
-          // console.log('Message already processed, skipping:', idKey);
+      
           return;
         }
 
@@ -142,7 +141,7 @@ export function useConversation(session: UserSession | null) {
           // ensure we don't already have this real message by id
           const hasById = incoming.id !== undefined && newMessages.some(m => toIdKey(m.id) === toIdKey(incoming.id));
           if (hasById) {
-            // console.log('Real message already exists, not adding duplicate');
+    
             return { ...prev, [convoId]: newMessages };
           }
 

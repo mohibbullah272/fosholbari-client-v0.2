@@ -24,6 +24,7 @@ export async function getDashboardRoutes() {
               { title: "পেমেন্ট পদ্ধতি আপডেট করুন", url: "/dashboard/admin/update-payment-method" },
               { title: "ইউজারদের পেমেন্ট গুলু দেখুন", url: "/dashboard/admin/all-payments" }, 
               { title: "বিনিয়োগকারীদের বার্তা", url: "/dashboard/Conversation" },
+              { title: "প্রজ্ঞাপন", url: "/dashboard/admin/notification" },
             ],
           },
         ],

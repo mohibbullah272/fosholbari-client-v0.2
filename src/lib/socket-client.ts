@@ -29,7 +29,7 @@ class SocketClient {
     this.userId = parseInt(session.id);
 
     console.log('🔌 Connecting to socket server at:', this.baseUrl);
-    console.log('🔌 User ID:', this.userId);
+
 
     // Use websocket-only transport to avoid polling causing duplicate behavior.
     this.socket = io(this.baseUrl, {

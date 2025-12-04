@@ -22,6 +22,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { signOut, useSession } from "next-auth/react";
 import { ModeToggle } from "@/helpers/theme-toggle";
+import NotificationBell from "../notification/NotificationBell";
 
 const Navbar5 = () => {
 const pathName=usePathname()
@@ -117,6 +118,7 @@ Dashboard
 </NavigationMenuItem>
  }
           <ModeToggle></ModeToggle>
+          <NotificationBell></NotificationBell>
             </NavigationMenuList>
           </NavigationMenu>
           <div className="hidden items-center gap-4 lg:flex">
@@ -234,6 +236,7 @@ Dashboard
 </NavigationMenuItem>
  }
  <ModeToggle></ModeToggle>
+ <NotificationBell></NotificationBell>
             </NavigationMenuList>
           </NavigationMenu>
                 <div className="mt-6 flex flex-col gap-4">

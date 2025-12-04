@@ -113,7 +113,7 @@ export const ProgressUpdateModal = ({
         ]
       };
 
-      console.log('Sending update data:', updateData); // For debugging
+   
 
       const result = await projectApi.updateProjectProgress(project?.id, updateData);
 

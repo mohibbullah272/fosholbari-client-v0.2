@@ -2,16 +2,16 @@
 import { useState } from "react";
 
 export interface UseCloudinaryUploadReturn {
-  image: string | null;
+  images: string[];
   uploading: boolean;
   error: string | null;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => Promise<string | null>;
-  removeImage: () => void;
+  removeImage: (index?: number) => void;
   clear: () => void;
 }
 
 export const useCloudinaryUpload = (): UseCloudinaryUploadReturn => {
-  const [image, setImage] = useState<string | null>(null);
+  const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,7 +53,7 @@ export const useCloudinaryUpload = (): UseCloudinaryUploadReturn => {
 
       if (data.secure_url) {
         const imageUrl = data.secure_url;
-        setImage(imageUrl);
+        setImages([imageUrl]); // Store as array with single image
         return imageUrl; // Return the URL so parent component can use it
       } else {
         throw new Error(data.error?.message || "আপলোড ব্যর্থ হয়েছে");
@@ -66,14 +66,21 @@ export const useCloudinaryUpload = (): UseCloudinaryUploadReturn => {
     }
   };
 
-  const removeImage = () => {
-    setImage(null);
+  const removeImage = (index: number = 0) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const clear = () => {
-    setImage(null);
+    setImages([]);
     setError(null);
   };
 
-  return { image, uploading, error, handleFileChange, removeImage, clear };
+  return { 
+    images, 
+    uploading, 
+    error, 
+    handleFileChange, 
+    removeImage, 
+    clear 
+  };
 };
