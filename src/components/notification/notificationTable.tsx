@@ -48,6 +48,7 @@ import { Trash2, Eye, MoreVertical, Search, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { AdminNotification, PaginatedResponse } from '@/types/notification';
 import { deleteNotification } from '@/actions/notification-action';
+import { formatDate } from '@/helpers/formatDate';
 
 
 interface NotificationTableProps {
@@ -85,9 +86,7 @@ export default function NotificationTable({
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'MMM dd, yyyy HH:mm');
-  };
+
 
   return (
     <>

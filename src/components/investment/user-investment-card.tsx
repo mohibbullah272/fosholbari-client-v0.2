@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Eye, Calendar, CreditCard, Share2, DollarSign } from 'lucide-react';
 import { Investment } from '@/types/investemnt';
+import { formatDate } from '@/helpers/formatDate';
 
 interface InvestmentCardProps {
   investment: Investment;
@@ -12,15 +13,7 @@ interface InvestmentCardProps {
 }
 
 export const InvestmentCard = ({ investment, onViewDetails }: InvestmentCardProps) => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('bn-BD', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('bn-BD', {

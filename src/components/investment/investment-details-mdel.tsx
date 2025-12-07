@@ -22,6 +22,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Loader2, User, Phone, Calendar, CreditCard, MapPin, Share2, DollarSign } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
+import { formatDate } from '@/helpers/formatDate';
 
 interface InvestmentDetailsModalProps {
   investment: Investment | null;
@@ -111,15 +112,6 @@ export const InvestmentDetailsModal = ({
     setSelectedStatus(investment?.status || 'PENDING');
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('bn-BD', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('bn-BD', {

@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { formatDate } from '@/helpers/formatDate';
 
 const AdminDashboardOverview = async () => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/admin/dashboard-overview`, {
@@ -47,13 +48,6 @@ const AdminDashboardOverview = async () => {
   ];
 
   // Format date function for Bangla
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('bn-BD', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
 
 
 

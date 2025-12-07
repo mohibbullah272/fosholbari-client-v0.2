@@ -3,7 +3,9 @@ import { PaymentMethod, PaymentMethods } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Edit2, Trash2, Smartphone, CreditCard, Building, Copy } from 'lucide-react';
+import { Edit2, Trash2, Copy } from 'lucide-react';
+import getIcons from '../paymentMethodsIcons';
+
 
 interface PaymentMethodCardProps {
   paymentMethod: PaymentMethod;
@@ -15,12 +17,12 @@ export const PaymentMethodCard = ({ paymentMethod, onEdit, onDelete }: PaymentMe
   // Payment method display configuration
   const getMethodConfig = (method: PaymentMethods) => {
     const configs = {
-      [PaymentMethods.BKASH]: { label: 'বিকাশ', icon: Smartphone, color: 'bg-red-500' },
-      [PaymentMethods.NAGAD]: { label: 'নগদ', icon: Smartphone, color: 'bg-purple-500' },
-      [PaymentMethods.ROCKET]: { label: 'রকেট', icon: Smartphone, color: 'bg-blue-500' },
-      [PaymentMethods.UPAY]: { label: 'উপায়', icon: Smartphone, color: 'bg-green-500' },
-      [PaymentMethods.BANK]: { label: 'ব্যাংক', icon: Building, color: 'bg-gray-500' },
-      [PaymentMethods.UCB]: { label: 'ইউসিবি', icon: CreditCard, color: 'bg-orange-500' },
+      [PaymentMethods.BKASH]: { label: 'বিকাশ',  color: 'bg-pink-400' },
+      [PaymentMethods.NAGAD]: { label: 'নগদ',  color: 'bg-red-400' },
+      [PaymentMethods.ROCKET]: { label: 'রকেট',  color: 'bg-purple-400' },
+      [PaymentMethods.UPAY]: { label: 'উপায়',  color: 'bg-yellow-400' },
+      [PaymentMethods.BANK]: { label: 'ব্যাংক',  color: 'bg-gray-400' },
+      [PaymentMethods.UCB]: { label: 'ইউসিবি',  color: 'bg-slate-300' },
     };
     return configs[method];
   };
@@ -38,7 +40,7 @@ export const PaymentMethodCard = ({ paymentMethod, onEdit, onDelete }: PaymentMe
         <div className={`${config.color} text-white p-4 rounded-t-lg`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <config.icon className="h-5 w-5" />
+       {getIcons(config.label)}
               <h3 className="font-semibold text-lg">{config.label}</h3>
             </div>
             <Badge variant="secondary" className="bg-white/20 text-white">

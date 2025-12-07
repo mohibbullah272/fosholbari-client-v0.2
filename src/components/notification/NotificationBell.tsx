@@ -28,6 +28,8 @@ export default function NotificationBell() {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
+
+
   useEffect(() => {
     if (session?.user) {
       fetchNotifications();
@@ -37,7 +39,7 @@ export default function NotificationBell() {
   const fetchNotifications = async () => {
     try {
       const data = await getLatestNotifications();
-      setNotifications(data?.data.notifications);
+      setNotifications(data?.data?.notifications);
       setUnreadCount(data.unreadCount);
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
@@ -121,14 +123,14 @@ export default function NotificationBell() {
         <DropdownMenuSeparator />
         
         <ScrollArea className="h-72">
-          {notifications.length === 0 ? (
+          {notifications?.length === 0 ? (
             <div className="py-6 text-center text-muted-foreground">
               <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
               <p>No notifications yet</p>
             </div>
           ) : (
             <div className="p-1">
-              {notifications.map((notification) => (
+              {notifications?.map((notification) => (
                 <DropdownMenuItem
                   key={notification.id}
                   className="flex flex-col items-start p-3 mb-1 cursor-default"

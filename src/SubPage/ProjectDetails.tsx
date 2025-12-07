@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, TrendingUp, DollarSign, Clock, Tag, PieChart, Calculator } from 'lucide-react';
 import Link from 'next/link';
 import Swal from 'sweetalert2'
+import CommentSection from '@/components/review/CommentSection';
 
 interface Project {
   id: number;
@@ -56,28 +57,28 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, user }) => {
     totalShare: project?.totalShare || ''
   }).toString();
 
-const handleAlert = ()=>{
-  Swal.fire({
-    title: "দুঃখিত",
-    html:`
-    <p className="text-sm text-gray-700">আপনার অ্যাকাউন্টটি বর্তমানে অনুমোদনের অপেক্ষায় রয়েছে। ড্যাশবোর্ডে গিয়ে KYC ভেরিফিকেশন প্রক্রিয়া সম্পন্ন করুন। ভেরিফিকেশন শেষ হলে আপনি এখানে ফিরে এসে বিনিয়োগ করতে পারবেন। আপনার সহযোগিতার জন্য আন্তরিক ধন্যবাদ।</p>
-    `,
-    showClass: {
-      popup: `
-        animate__animated
-        animate__fadeInUp
-        animate__faster
-      `
-    },
-    hideClass: {
-      popup: `
-        animate__animated
-        animate__fadeOutDown
-        animate__faster
-      `
-    }
-  });
-}
+// const handleAlert = ()=>{
+//   Swal.fire({
+//     title: "দুঃখিত",
+//     html:`
+//     <p className="text-sm text-gray-700">আপনার অ্যাকাউন্টটি বর্তমানে অনুমোদনের অপেক্ষায় রয়েছে। ড্যাশবোর্ডে গিয়ে KYC ভেরিফিকেশন প্রক্রিয়া সম্পন্ন করুন। ভেরিফিকেশন শেষ হলে আপনি এখানে ফিরে এসে বিনিয়োগ করতে পারবেন। আপনার সহযোগিতার জন্য আন্তরিক ধন্যবাদ।</p>
+//     `,
+//     showClass: {
+//       popup: `
+//         animate__animated
+//         animate__fadeInUp
+//         animate__faster
+//       `
+//     },
+//     hideClass: {
+//       popup: `
+//         animate__animated
+//         animate__fadeOutDown
+//         animate__faster
+//       `
+//     }
+//   });
+// }
 
   const formatDate = (dateString: string) => {
     try {
@@ -379,7 +380,7 @@ const handleAlert = ()=>{
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            {user?.id && !isUserInvested && user?.status === "APPROVED" && (
+            {user?.id && !isUserInvested  && (
               <Link href={`/make-payment?${queryParams}`}>
                 <button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-3 px-6 rounded-lg font-semibold transition-colors duration-200 shadow-lg">
                   এখনই বিনিয়োগ করুন
@@ -394,13 +395,7 @@ const handleAlert = ()=>{
                 </button>
               </Link>
             )}
-            {
-              user?.id && user?.status !== "APPROVED" && (
-                <button onClick={handleAlert} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-3 px-6 rounded-lg font-semibold transition-colors duration-200 shadow-lg">
-                  এখনই বিনিয়োগ করুন
-                </button>
-              )
-            }
+   
             {isUserInvested && (
               <button className="w-full bg-gray-500 text-primary-foreground hover:bg-gray-600 py-3 px-6 rounded-lg font-semibold transition-colors duration-200 shadow-lg cursor-not-allowed">
                 আপনি ইতিপূর্বে বিনিয়োগ করেছেন
@@ -409,6 +404,10 @@ const handleAlert = ()=>{
           </div>
         </div>
       </div>
+
+  {
+    project.id && ( <CommentSection projectId={project.id}></CommentSection>)
+  }
     </div>
   );
 };

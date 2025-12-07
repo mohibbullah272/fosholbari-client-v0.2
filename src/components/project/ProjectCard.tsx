@@ -6,6 +6,7 @@ import "aos/dist/aos.css";
 import { Calendar, MapPin, TrendingUp, ArrowRight } from 'lucide-react';
 import { IProject } from '@/types';
 import React from 'react';
+import { formatDate } from '@/helpers/formatDate';
 
 interface ProjectCardProps {
   project: IProject;
@@ -17,14 +18,8 @@ export default function ProjectCard({ project }: ProjectCardProps) {
  
 
 
-  // Format date
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
+
+
 
   // Calculate days remaining
   const getDaysRemaining = (expireDate: string) => {

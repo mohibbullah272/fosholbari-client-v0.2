@@ -42,7 +42,7 @@ async function fetchWithUser(url: string, options: RequestInit = {}) {
 
   if (!response.ok) {
     const error = await response.json();
-   
+
     throw new Error(error.message || 'Request failed');
   }
 
@@ -125,7 +125,10 @@ export async function getLatestNotifications() {
     const user = await getUserFromSession();
     const url = `/notifications/user/${user.id}/latest?limit=5`;
     const response = await fetchWithUser(url);
-    return await response.json();
+
+   const result = await response.json();
+ 
+   return result
   } catch (error) {
     console.error('Fetch latest notifications error:', error);
     return { 

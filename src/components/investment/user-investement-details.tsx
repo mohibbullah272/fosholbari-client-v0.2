@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader2, User, Phone, Calendar, CreditCard, Share2, DollarSign, MapPin, FileText, Copy } from 'lucide-react';
 import Image from 'next/image';
+import { formatDate } from '@/helpers/formatDate';
 
 
 interface InvestmentDetailsModalProps {
@@ -53,15 +54,6 @@ export const InvestmentDetailsModal = ({ investmentId, open, onClose }: Investme
     fetchDetails();
   }, [investmentId, open]);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('bn-BD', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('bn-BD', {

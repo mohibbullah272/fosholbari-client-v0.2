@@ -12,6 +12,8 @@ export async function getUserFromSession() {
     return {
       id: parseInt(session.user.id),
       role: session?.user.role,
+      name:session.user.name,
+      phone:session.user.phone,
       status: session?.user.status,
     };
   }

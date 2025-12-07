@@ -3,12 +3,15 @@ import { IProject } from '../../types/index';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 
-export const dynamic = "force-static";
+
 
 const RecentProject = async () => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/all?limit=3`, {
-      cache: "force-cache"
+      cache: "no-cache",
+      next:{
+        revalidate:360
+      }
     });
 
     // Check if response is ok

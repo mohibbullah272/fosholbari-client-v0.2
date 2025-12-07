@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, CheckCircle2, User as UserIcon, ArrowLeft, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { useCloudinaryUpload } from '@/hooks/useCloudinaryUpload';
+import { formatDate } from '@/helpers/formatDate';
 
 const MyProfile = () => {
   const { data: session, status: sessionStatus } = useSession();
@@ -113,13 +114,7 @@ const MyProfile = () => {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('bn-BD', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+
 
   if (sessionStatus === 'loading' || loading) {
     return (
