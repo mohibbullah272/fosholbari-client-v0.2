@@ -60,7 +60,7 @@ export async function createNotification(data: CreateNotificationInput) {
     revalidatePath('/dashboard/admin/notifications');
     return await response.json();
   } catch (error) {
-    console.error('Create notification error:', error);
+
     throw error;
   }
 }

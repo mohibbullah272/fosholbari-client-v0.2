@@ -127,7 +127,7 @@ export async function fetchConversation(
     );
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      return { success: false, error:'Failed to fetch conversation'}
     }
 
     const result = await response.json();

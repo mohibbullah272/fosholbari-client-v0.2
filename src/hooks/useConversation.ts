@@ -20,53 +20,59 @@ export function useConversation(session: UserSession | null) {
   const [typingUsers, setTypingUsers] = useState<Record<number, number[]>>({});
   const [onlineUsers, setOnlineUsers] = useState<number[]>([]);
   const router = useRouter();
-  const socketInitialized = useRef(false);
+  
+  // ✅ CRITICAL: Track if socket was initialized GLOBALLY (not per-component)
+  const socketInitializedGlobal = useRef(false);
+  const listenersAttached = useRef(false);
 
-  // Track processed message ids (stringified) to avoid duplicates
   const messageIdsProcessed = useRef<Set<string>>(new Set());
 
-  // Helper: stringify id safely
   const toIdKey = (id: any) => (id === undefined || id === null ? '' : String(id));
 
   // ---------- socket listeners ----------
   useEffect(() => {
-    if (!session || socketInitialized.current) return;
+    if (!session) return;
 
-    socketInitialized.current = true;
+    // ✅ Connect socket ONCE globally (survives component remounts)
+    if (!socketInitializedGlobal.current) {
+      console.log('🔌 Initializing socket connection (GLOBAL)');
+      socketClient.connect(session);
+      socketInitializedGlobal.current = true;
+    }
 
-    // connect socket
-    socketClient.connect(session);
+    // ✅ Only attach listeners once per hook instance
+    if (listenersAttached.current) return;
+    listenersAttached.current = true;
 
-    // Handlers (stable refs not required because we remove by reference on cleanup)
+    console.log('📡 Attaching socket listeners');
+
+    // Handlers
     const handleAuthenticated = (data: any) => {
       setIsSocketConnected(true);
-  
-      // server auto-joins user's conversation rooms on authenticate; no need to join client-side
+      console.log('✅ Socket authenticated in hook');
     };
 
     const handleDisconnected = (data: any) => {
       setIsSocketConnected(false);
- 
+      console.log('🔴 Socket disconnected in hook');
     };
 
     const handleConnectError = (error: any) => {
-      console.error('Socket connection error:', error);
+      console.error('❌ Socket connection error:', error);
       setIsSocketConnected(false);
     };
 
     const handleOperationError = (err: any) => {
-      console.warn('Socket operation error:', err?.message || err);
-      // show toast for operation errors (non-fatal)
+      console.warn('⚠️ Socket operation error:', err?.message || err);
       if (err?.message) toast.error(err.message);
     };
 
     const handleAuthError = (err: any) => {
-      console.warn('Socket authentication error:', err?.message || err);
+      console.warn('🔐 Socket authentication error:', err?.message || err);
       if (err?.message) toast.error(err.message);
     };
 
     const handleConversationCreated = (data: any) => {
-      
       if (data?.conversation?.userId === parseInt(session.id)) {
         toast.success('Conversation created successfully');
         router.push(`/dashboard/Conversation/${data.conversation.id}`);
@@ -74,7 +80,7 @@ export function useConversation(session: UserSession | null) {
     };
 
     const handleUserStatusChange = (data: any) => {
-      console.log('User status changed:', data);
+      console.log('👤 User status changed:', data);
       setOnlineUsers(prev => {
         if (data.isOnline) {
           return Array.from(new Set([...prev, data.userId]));
@@ -98,23 +104,16 @@ export function useConversation(session: UserSession | null) {
       });
     };
 
-    // New message handler: server emits transformed message { conversationId, message }
     const handleNewMessage = (payload: any) => {
       try {
-        // payload shape: { conversationId, message }
         const convoId = Number(payload.conversationId);
         const incoming: Message = payload.message;
 
-        // Normalize id to string key
         const incomingIdKey = toIdKey(incoming.id);
-
-        // If no id provided (shouldn't happen from server), create key from content+ts
         const fallbackIdKey = incomingIdKey || `noid_${convoId}_${incoming.Text || incoming.Text}_${new Date(incoming.createdAt || Date.now()).getTime()}`;
-
         const idKey = incomingIdKey || fallbackIdKey;
 
         if (messageIdsProcessed.current.has(idKey)) {
-      
           return;
         }
 
@@ -123,8 +122,6 @@ export function useConversation(session: UserSession | null) {
         setMessagesCache(prev => {
           const existing = prev[convoId] ? [...prev[convoId]] : [];
 
-          // If incoming message id matches an optimistic message (same text and isOptimistic),
-          // remove optimistic and push real.
           const optimisticIndex = existing.findIndex(m =>
             m.isOptimistic &&
             ( (incoming.Text && m.Text === incoming.Text) ||
@@ -134,18 +131,14 @@ export function useConversation(session: UserSession | null) {
           let newMessages = existing;
 
           if (optimisticIndex > -1) {
-            // remove optimistic
             newMessages = existing.filter((_, idx) => idx !== optimisticIndex);
           }
 
-          // ensure we don't already have this real message by id
           const hasById = incoming.id !== undefined && newMessages.some(m => toIdKey(m.id) === toIdKey(incoming.id));
           if (hasById) {
-    
             return { ...prev, [convoId]: newMessages };
           }
 
-          // push message
           const normalized: Message = {
             id: incoming.id,
             Text: incoming.Text || (incoming.Text as string) || '',
@@ -158,14 +151,13 @@ export function useConversation(session: UserSession | null) {
           return { ...prev, [convoId]: [...newMessages, normalized] };
         });
 
-        // show toast if not from self
         const senderId = Number(incoming.senderId ?? incoming?.senderId);
         if (senderId !== parseInt(session.id)) {
           const senderName = incoming.senderRole === 'ADMIN' ? 'Admin' : 'User';
           toast.info(`New message from ${senderName}`);
         }
       } catch (err) {
-        console.error('Error handling incoming message:', err);
+        console.error('💥 Error handling incoming message:', err);
       }
     };
 
@@ -180,8 +172,15 @@ export function useConversation(session: UserSession | null) {
     socketClient.on('user_typing', handleUserTyping);
     socketClient.on('new_message', handleNewMessage);
 
-    // cleanup
+    // Check initial connection state
+    if (socketClient.isConnected()) {
+      setIsSocketConnected(true);
+    }
+
+    // ✅ CRITICAL FIX: Cleanup ONLY removes listeners, NOT the socket connection
     return () => {
+      console.log('🧹 Cleaning up listeners (keeping socket alive)');
+      
       socketClient.off('authenticated', handleAuthenticated);
       socketClient.off('disconnected', handleDisconnected);
       socketClient.off('connect_error', handleConnectError);
@@ -192,16 +191,24 @@ export function useConversation(session: UserSession | null) {
       socketClient.off('user_typing', handleUserTyping);
       socketClient.off('new_message', handleNewMessage);
 
-      // disconnect socket to avoid duplicate connections on HMR/unmount
-      if (socketInitialized.current) {
-        socketClient.disconnect();
-        socketInitialized.current = false;
-      }
-
-      // clear processed ids (optional)
-      messageIdsProcessed.current.clear();
+      // ❌ DO NOT DISCONNECT - Let socket live across navigations
+      // Only disconnect on actual logout/session end
+      
+      listenersAttached.current = false;
     };
   }, [session, router]);
+
+  // ✅ NEW: Handle actual session end (logout)
+  useEffect(() => {
+    // If session becomes null, disconnect the socket
+    if (!session && socketInitializedGlobal.current) {
+      console.log('🔴 Session ended - disconnecting socket');
+      socketClient.disconnect();
+      socketInitializedGlobal.current = false;
+      listenersAttached.current = false;
+      messageIdsProcessed.current.clear();
+    }
+  }, [session]);
 
   // ---------- send message (optimistic + socket + HTTP) ----------
   const handleSendMessageOptimized = useCallback(
@@ -218,11 +225,10 @@ export function useConversation(session: UserSession | null) {
 
       setLoading(true);
 
-      const tempId = Date.now(); // numeric temp id
+      const tempId = Date.now();
       const tempIdKey = String(tempId);
 
       try {
-        // optimistic message
         const tempMessage: Message = {
           id: tempId,
           Text: text.trim(),
@@ -233,38 +239,29 @@ export function useConversation(session: UserSession | null) {
           isOptimistic: true,
         };
 
-        // mark processed to avoid duplicate from socket if server broadcasts quickly
         messageIdsProcessed.current.add(tempIdKey);
 
-        // add to cache
         setMessagesCache(prev => ({
           ...prev,
           [convoId]: [...(prev[convoId] || []), tempMessage],
         }));
 
-        // try socket first (non-blocking)
         const socketSuccess = socketClient.sendMessageSocket(convoId, text.trim());
         if (!socketSuccess) {
-          console.warn('Socket not connected, will fallback to HTTP only');
+          console.warn('⚠️ Socket not connected, will fallback to HTTP only');
         }
 
-        // always call backend HTTP to ensure persistence & authorative id
         const result = await sendMessage(convoId, text.trim(), session);
 
         if (result.success && result.data) {
           const realIdKey = String(result.data.id ?? `api_${Date.now()}`);
 
-          // mark real id processed (avoid adding again later)
           messageIdsProcessed.current.add(realIdKey);
 
-          // update cache: remove optimistic and add real message if not exists
           setMessagesCache(prev => {
             const existing = prev[convoId] ? [...prev[convoId]] : [];
-
-            // remove optimistic messages that match by tempId
             const withoutOptimistic = existing.filter(m => !(m.isOptimistic && String(m.id) === tempIdKey));
 
-            // if real message already exists by id or text (safety), don't duplicate
             const alreadyHasReal = withoutOptimistic.some(m => String(m.id) === realIdKey ||
               (m.Text === (result.data.text || result.data.Text) && !m.isOptimistic));
 
@@ -289,7 +286,6 @@ export function useConversation(session: UserSession | null) {
 
           return { success: true, data: result.data };
         } else {
-          // failure: remove optimistic message and unmark processed
           setMessagesCache(prev => ({
             ...prev,
             [convoId]: (prev[convoId] || []).filter(m => !(m.isOptimistic && String(m.id) === tempIdKey)),
@@ -300,8 +296,7 @@ export function useConversation(session: UserSession | null) {
           return result;
         }
       } catch (err) {
-        console.error('Unexpected send error:', err);
-        // rollback optimistic
+        console.error('💥 Unexpected send error:', err);
         setMessagesCache(prev => ({
           ...prev,
           [convoId]: (prev[convoId] || []).filter(m => !(m.isOptimistic && String(m.id) === tempIdKey)),
@@ -317,22 +312,19 @@ export function useConversation(session: UserSession | null) {
     [session]
   );
 
-  // Clear conversation cache
   const clearConversationCache = useCallback((convoId: number) => {
     setMessagesCache(prev => {
       const newC = { ...prev };
       delete newC[convoId];
       return newC;
     });
-    console.log('Cleared cache for conversation:', convoId);
+    console.log('🗑️ Cleared cache for conversation:', convoId);
   }, []);
 
-  // fetch conversation (server already auto-joined on authenticate; no need to join)
   const getConversation = useCallback(
     async (convoId: number) => {
       if (!session) return { success: false, error: 'Not authenticated' };
 
-      // Use cache if present
       if (messagesCache[convoId]) {
         return {
           success: true,
@@ -373,10 +365,8 @@ export function useConversation(session: UserSession | null) {
 
     const result = await fetchConversations(session);
 
-    // server auto-joins on authenticate; but we still ensure local join for rooms if needed
     if (isSocketConnected && result.success && result.data) {
       result.data.forEach((conversation: any) => {
-        // idempotent: socketClient.joinConversation will no-op if already joined or socket not connected
         socketClient.joinConversation(conversation.id);
       });
     }
@@ -432,7 +422,7 @@ export function useConversation(session: UserSession | null) {
 
       return result;
     } catch (err) {
-      console.error('Create conversation error:', err);
+      console.error('💥 Create conversation error:', err);
       toast.error('An unexpected error occurred');
       return { success: false, error: 'Unexpected error' };
     } finally {
@@ -453,10 +443,8 @@ export function useConversation(session: UserSession | null) {
     getUserConversation,
     clearConversationCache,
     joinConversationRoom: (convoId: number) => {
-      // idempotent: server auto-joins on authenticate; this is a no-op if already joined
       socketClient.joinConversation(convoId);
     },
-    // expose messages cache for UI
     messagesCache,
   };
 }

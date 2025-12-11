@@ -44,7 +44,7 @@ export const ProfileImageUpload = ({
     onImageSelect('');
   };
 
-  const displayImage = localImage || currentImage;
+  const displayImage = localImage || currentImage|| null ;
 
   return (
     <Card>
