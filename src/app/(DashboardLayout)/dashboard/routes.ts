@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth"
 
 export async function getDashboardRoutes() {
   const session = await getServerSession(authOptions)
-  // const role = "ADMIN"
+
   const role = session?.user.role || "guest"
 
   switch (role) {

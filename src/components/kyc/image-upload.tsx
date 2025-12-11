@@ -26,16 +26,16 @@ export const ImageUpload = ({
   required = false,
   currentImage
 }: ImageUploadProps) => {
-  const { image, uploading, error, handleFileChange, removeImage } = uploadHook;
+  const { images, uploading, error, handleFileChange, removeImage } = uploadHook;
   const [localImage, setLocalImage] = useState<string | null>(null);
 
   // Update local image when hook image changes
   useEffect(() => {
-    if (image) {
-      setLocalImage(image);
-      onImageSelect(image); // Call the callback when image is ready
+    if (images) {
+      setLocalImage(images);
+      onImageSelect(images); // Call the callback when image is ready
     }
-  }, [image, onImageSelect]);
+  }, [images, onImageSelect]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const imageUrl = await handleFileChange(e);

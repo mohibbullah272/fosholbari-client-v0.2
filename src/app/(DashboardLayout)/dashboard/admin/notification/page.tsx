@@ -12,9 +12,7 @@ import NotificationTable from '@/components/notification/notificationTable';
 
 export default async function NotificationPage({
   searchParams,
-}: {
-  searchParams: { page?: string; search?: string };
-}) {
+}:any) {
 
 
   const page = parseInt(searchParams.page || '1');

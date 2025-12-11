@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 export interface UseCloudinaryUploadReturn {
-  images: string[];
+  images: any ;
   uploading: boolean;
   error: string | null;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => Promise<string | null>;

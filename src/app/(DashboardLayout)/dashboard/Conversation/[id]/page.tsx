@@ -6,33 +6,25 @@ import { getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation';
 
 
-interface ConversationDetailPageProps {
-  params: {
-    id: string;
-  };
-}
 
-export default async function ConversationDetailPage({
-  params,
-}: ConversationDetailPageProps) {
+export default async function ConversationDetailPage({ params }: any) {
   const session = await getServerSession(authOptions);
-  
+
   if (!session?.user) {
     redirect('/signin');
   }
-const {id} = await params
+
+  const { id } = params;
 
   const convoId = parseInt(id);
 
   if (isNaN(convoId)) {
-
     notFound();
   }
 
   const result = await fetchConversation(convoId, session.user as UserSession);
 
   if (!result.success || !result.data) {
-
     notFound();
   }
 

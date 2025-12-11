@@ -20,15 +20,15 @@ export const ProfileImageUpload = ({
   onImageSelect,
   currentImage
 }: ProfileImageUploadProps) => {
-  const { image, uploading, error, handleFileChange, removeImage } = uploadHook;
+  const { images, uploading, error, handleFileChange, removeImage } = uploadHook;
   const [localImage, setLocalImage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (image) {
-      setLocalImage(image);
-      onImageSelect(image);
+    if (images) {
+      setLocalImage(images);
+      onImageSelect(images);
     }
-  }, [image, onImageSelect]);
+  }, [images, onImageSelect]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const imageUrl = await handleFileChange(e);

@@ -24,7 +24,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Loader2, Plus, X, Upload } from 'lucide-react';
+import { Loader2, Plus, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { useCloudinaryUpload } from '@/hooks/use-cloudinary-upload';
@@ -56,16 +56,16 @@ export default function CreateNotificationModal({ children }:{children:any}) {
   });
 
   // Handle image upload
-  const onImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const url = await cloudinary.handleFileChange(e);
-      if (url) {
-        form.setValue('image', url);
-      }
-    } catch (err) {
-      console.error('Upload failed:', err);
-    }
-  };
+  // const onImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   try {
+  //     const url = await cloudinary.handleFileChange(e);
+  //     if (url) {
+  //       form.setValue('image', url);
+  //     }
+  //   } catch (err) {
+  //     console.error('Upload failed:', err);
+  //   }
+  // };
 
   // Submit form
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -174,22 +174,10 @@ export default function CreateNotificationModal({ children }:{children:any}) {
                 </div>
               )}
 
-              <input
-                type="file"
-                accept="image/*"
-                onChange={onImageUpload}
-                className="hidden"
-                id="file-upload"
-              />
-              <label htmlFor="file-upload">
-                <Button type="button" variant="outline" className="w-full">
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload Image
-                </Button>
-              </label>
+       
 
               <p className="text-sm text-muted-foreground mt-1">
-                Or enter URL:
+               enter URL:
               </p>
               <FormField
                 control={form.control}
