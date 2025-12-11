@@ -20,15 +20,6 @@ type Props = {
 
 const SPRING = { damping: 40, stiffness: 90, mass: 0.35 };
 
-/**
- * BackgroundAnimation
- * - Next.js + TypeScript + Tailwind (shadcn token-friendly classes)
- * - Framer Motion: scroll-parallax + idle/wind motion + springs
- *
- * Minimal install:
- *   pnpm add framer-motion
- *   (Tailwind + shadcn tokens recommended)
- */
 
 export default function BackgroundAnimation({ intensity = 1 }: Props) {
   const prefersReducedMotion = useReducedMotion();

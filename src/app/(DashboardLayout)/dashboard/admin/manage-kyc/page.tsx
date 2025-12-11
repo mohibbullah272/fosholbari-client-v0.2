@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { KYC } from '@/types/kyc';
 import KYCViewModal from '@/components/kyc/kyc-veiw-model';
 import KYCResponseModal from '@/components/kyc/kyc-response-model';
+import { toast } from 'sonner';
 
 
 const ManageKyc = () => {
@@ -33,6 +34,7 @@ const ManageKyc = () => {
       setKycList(data.data);
     } catch (error) {
       console.error('KYC লিস্ট লোড করতে সমস্যা:', error);
+      toast.error('KYC লিস্ট লোড করতে সমস্যা:')
     } finally {
       setLoading(false);
     }
@@ -61,8 +63,9 @@ const ManageKyc = () => {
       const kycDetails = await response.json();
       setSelectedKyc(kycDetails.data);
       setViewModalOpen(true);
-    } catch (error) {
+    } catch (error:any) {
       console.error('KYC বিস্তারিত দেখতে সমস্যা:', error);
+      toast.error(error?.message)
     }
   };
 

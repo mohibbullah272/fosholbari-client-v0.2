@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Smartphone, Building, CreditCard, ArrowLeft, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import getIcons from '@/components/paymentMethodsIcons';
 interface PaymentFormProps {
   paymentMethod: PaymentMethod;
   projectId: number;
@@ -31,17 +32,6 @@ interface PaymentFormProps {
 
   const totalAmount = shareBought * sharePrice;
 
-  const getMethodIcon = (method: PaymentMethods) => {
-    const icons = {
-      [PaymentMethods.BKASH]: Smartphone,
-      [PaymentMethods.NAGAD]: Smartphone,
-      [PaymentMethods.ROCKET]: Smartphone,
-      [PaymentMethods.UPAY]: Smartphone,
-      [PaymentMethods.BANK]: Building,
-      [PaymentMethods.UCB]: CreditCard,
-    };
-    return icons[method];
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +51,6 @@ interface PaymentFormProps {
     });
   };
 
-  const IconComponent = getMethodIcon(paymentMethod?.methodName) || Smartphone;
 
 
   return (
@@ -89,7 +78,7 @@ interface PaymentFormProps {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                  <IconComponent className="h-6 w-6 text-primary" />
+                 {getIcons(paymentMethod.methodName)}
                   <div>
                     <p className="font-semibold text-foreground">{paymentMethod?.methodName}</p>
                     <p className="text-sm text-muted-foreground">{paymentMethod?.number}</p>

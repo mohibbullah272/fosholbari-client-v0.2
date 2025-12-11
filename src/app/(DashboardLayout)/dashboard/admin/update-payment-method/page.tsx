@@ -203,7 +203,7 @@ const UpdatePaymentMethod = () => {
               {/* Action Buttons */}
               <div className="flex gap-2">
                 <Button asChild>
-                  <Link href="/dashboard/add-payment-method">
+                  <Link href="/dashboard/admin/add-payment-method">
                     <Plus className="h-4 w-4 mr-2" />
                     নতুন যোগ করুন
                   </Link>

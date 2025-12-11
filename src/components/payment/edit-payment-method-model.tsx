@@ -41,7 +41,6 @@ const updatePaymentMethodSchema = z.object({
   number: z.string()
     .min(1, "নম্বর প্রয়োজন")
     .regex(/^\d+$/, "শুধুমাত্র সংখ্যা allowed")
-    .refine(val => val.length >= 10 && val.length <= 15, "নম্বর ১০-১৫ digit হতে হবে")
     .optional(),
   accountName: z.string().min(1, "অ্যাকাউন্ট নাম প্রয়োজন").optional(),
   instruction: z.string().min(10, "নির্দেশনা কমপক্ষে ১০ অক্ষর দীর্ঘ হতে হবে").optional(),
@@ -98,7 +97,7 @@ export const EditPaymentMethodModal = ({
     try {
       const updateData: UpdatePaymentMethodData = {
         ...data,
-        number: data.number ? parseInt(data.number) : undefined,
+        number: data?.number,
       };
 
       // Remove undefined values

@@ -257,15 +257,28 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, user }) => {
                     <span className="font-semibold text-primary">৳{project?.sharePrice || '০'}</span>
                   </div>
                   {project?.estimatedROI && (
+                    <>   
+                            <del className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <span className="text-foreground">অনুমানিক ROI</span>
+                      <span className="font-semibold text-primary">
+                        {parseInt(formatROI(project.estimatedROI))/2}
+                      </span>
+                    </del>          
                     <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                       <span className="text-foreground">অনুমানিক ROI</span>
                       <span className="font-semibold text-primary">
                         {formatROI(project.estimatedROI)}
                       </span>
                     </div>
+            
+                    </>
                   )}
                 </div>
                 <div className="space-y-4">
+                  <del className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <span className="text-foreground">প্রতি শেয়ার লাভ</span>
+                    <span className="font-semibold text-primary">৳{parseInt(project?.profitPerShare)/2 || "0"}</span>
+                  </del>
                   <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                     <span className="text-foreground">প্রতি শেয়ার লাভ</span>
                     <span className="font-semibold text-primary">৳{project?.profitPerShare || '০'}</span>

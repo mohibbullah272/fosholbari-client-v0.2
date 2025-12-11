@@ -12,9 +12,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, User, Phone, Calendar, CreditCard, Share2, DollarSign, MapPin, FileText, Copy } from 'lucide-react';
+import { Loader2, User, Phone, Calendar, CreditCard, Share2, DollarSign, MapPin, Copy, Download } from 'lucide-react';
 import Image from 'next/image';
 import { formatDate } from '@/helpers/formatDate';
+import { downloadPdf } from '@/helpers/DownloadPdf';
+
 
 
 interface InvestmentDetailsModalProps {
@@ -75,7 +77,22 @@ export const InvestmentDetailsModal = ({ investmentId, open, onClose }: Investme
   };
 
   if (!investmentId) return null;
+const pdfData ={
+ investmentId,
+ investmentStatus:details?.status,
+ totalShareBought : details?.shareBought,
+ totalAmount : details?.totalAmount,
+ paymentMethod:details?.method,
+ userName : details?.user?.name,
+ userPhone : details?.user?.phone,
+ projectName : details?.project?.name,
+ projectLocation:details?.project?.location,
+ projectDuration:details?.project?.Duration,
+ investmentDate : details?.createdAt,
+ ROI : details?.project?.estimatedROI
 
+
+}
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -98,7 +115,7 @@ export const InvestmentDetailsModal = ({ investmentId, open, onClose }: Investme
             {error}
           </div>
         ) : details ? (
-          <div className="space-y-6">
+          <div id='user_investment' className="space-y-6">
             {/* Status Banner */}
             <Card className={`border-l-4 ${
               details.status === 'APPROVED' ? 'border-l-green-500' :
@@ -124,7 +141,7 @@ export const InvestmentDetailsModal = ({ investmentId, open, onClose }: Investme
               {/* Left Column - Investment & Payment Info */}
               <div className="space-y-6">
                 {/* Investment Information */}
-                <Card>
+                <Card >
                   <CardContent className="pt-6">
                     <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
                       <DollarSign className="h-5 w-5" />
@@ -315,9 +332,16 @@ export const InvestmentDetailsModal = ({ investmentId, open, onClose }: Investme
         ) : null}
 
         {/* Close Button */}
-        <div className="flex justify-end pt-4 border-t">
+        <div className="flex justify-between items-center pt-4 border-t">
           <Button onClick={onClose} variant="outline">
             বন্ধ করুন
+          </Button>
+          <Button onClick={()=>downloadPdf({
+            type:"investment",
+            data:pdfData
+          })}>
+            <Download />
+            পিডিএফ ডাউনলোড করুন
           </Button>
         </div>
       </DialogContent>

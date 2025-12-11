@@ -43,7 +43,7 @@ const MakePaymentContent = () => {
         const result = await paymentApi.getAllPaymentMethods();
         
         if (result.success) {
-          setPaymentMethods(result.data);
+          setPaymentMethods(result?.data);
         } else {
           setError('পেমেন্ট মেথড লোড করতে সমস্যা হয়েছে');
         }
@@ -191,7 +191,7 @@ const MakePaymentContent = () => {
       {/* Main Content */}
       {!selectedMethod ? (
         // Payment Methods Selection
-        <div className="space-y-6">
+        <div className="space-y-6 ">
           <Card>
             <CardContent className="pt-6">
               <h2 className="text-2xl font-bold text-foreground mb-2">পেমেন্ট মেথড নির্বাচন করুন</h2>

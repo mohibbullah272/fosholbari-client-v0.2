@@ -68,7 +68,7 @@ export const PaymentMethodForm = ({ onSuccess }: PaymentMethodFormProps) => {
     try {
       const paymentData: CreatePaymentMethodData = {
         ...data,
-        number: parseInt(data.number),
+        number: data?.number,
       };
 
       const result = await paymentApi.createPaymentMethod(paymentData);

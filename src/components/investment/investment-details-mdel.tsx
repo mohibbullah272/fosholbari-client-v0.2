@@ -19,10 +19,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, User, Phone, Calendar, CreditCard, MapPin, Share2, DollarSign } from 'lucide-react';
+import { Loader2, User, Phone, Calendar, CreditCard, MapPin, Share2, DollarSign, Download } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 import { formatDate } from '@/helpers/formatDate';
+import { downloadPdf } from '@/helpers/DownloadPdf';
 
 interface InvestmentDetailsModalProps {
   investment: Investment | null;
@@ -134,7 +135,22 @@ export const InvestmentDetailsModal = ({
   if (!investment) return null;
 
   const statusConfig = getStatusConfig(details?.status || investment.status);
-
+  const pdfData ={
+   
+    investmentStatus:details?.status,
+    totalShareBought : details?.shareBought,
+    totalAmount : details?.totalAmount,
+    paymentMethod:details?.method,
+    userName : details?.user?.name,
+    userPhone : details?.user?.phone,
+    projectName : details?.project?.name,
+    projectLocation:details?.project?.location,
+    projectDuration:details?.project?.Duration,
+    investmentDate : details?.createdAt,
+    ROI : details?.project?.estimatedROI
+   
+   
+   }
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
@@ -388,9 +404,16 @@ export const InvestmentDetailsModal = ({
         )}
 
         {/* Close Button */}
-        <div className="flex justify-end pt-4 border-t">
+        <div className="flex justify-between items-center pt-4 border-t">
           <Button onClick={onClose} variant="outline">
             বন্ধ করুন
+          </Button>
+          <Button onClick={()=>downloadPdf({
+            type:"investment",
+            data:pdfData
+          })}>
+            <Download />
+            পিডিএফ ডাউনলোড করুন
           </Button>
         </div>
       </DialogContent>

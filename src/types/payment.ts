@@ -16,7 +16,7 @@ export enum PaymentMethods {
   export interface PaymentMethod {
     id: number;
     methodName: PaymentMethods;
-    number: number;
+    number: string;
     accountName: string;
     instruction: string;
   }

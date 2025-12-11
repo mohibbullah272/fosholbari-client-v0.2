@@ -1,3 +1,4 @@
+import ModalWrapper from "@/components/annoucment/modalWrraper";
 import { ChatbotProvider } from "@/components/chatbot/chatbotProvider";
 import { Footer } from "@/components/shared/Footer";
 import { Navbar5 } from "@/components/shared/Navbar";
@@ -13,6 +14,9 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
       
       {/* Chatbot Floating Button */}
       <ChatbotProvider />
+      
+      {/* New Year Announcement Modal - Client Only */}
+      <ModalWrapper />
     </div>
   );
 };

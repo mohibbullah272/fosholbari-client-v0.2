@@ -3,10 +3,12 @@
 import { PaymentMethod, PaymentMethods } from '@/types/payment';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Smartphone, CreditCard, Building, Copy, CheckCircle2, ArrowRight } from 'lucide-react';
+import {  CreditCard,  Copy, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
+import getIcons from '@/components/paymentMethodsIcons';
+
 
 interface PaymentDetailsProps {
   paymentMethod: PaymentMethod | null;
@@ -36,7 +38,7 @@ const PaymentDetails = ({ paymentMethod, onBack, onProceed }: PaymentDetailsProp
     const configs = {
       [PaymentMethods.BKASH]: { 
         label: 'বিকাশ', 
-        icon: Smartphone, 
+ 
         color: 'bg-red-500',
         steps: [
           'বিকাশ অ্যাপে লগইন করুন',
@@ -49,7 +51,7 @@ const PaymentDetails = ({ paymentMethod, onBack, onProceed }: PaymentDetailsProp
       },
       [PaymentMethods.NAGAD]: { 
         label: 'নগদ', 
-        icon: Smartphone, 
+ 
         color: 'bg-purple-500',
         steps: [
           'নগদ অ্যাপে লগইন করুন',
@@ -62,7 +64,7 @@ const PaymentDetails = ({ paymentMethod, onBack, onProceed }: PaymentDetailsProp
       },
       [PaymentMethods.ROCKET]: { 
         label: 'রকেট', 
-        icon: Smartphone, 
+
         color: 'bg-blue-500',
         steps: [
           'রকেট অ্যাপে লগইন করুন',
@@ -75,7 +77,7 @@ const PaymentDetails = ({ paymentMethod, onBack, onProceed }: PaymentDetailsProp
       },
       [PaymentMethods.UPAY]: { 
         label: 'উপায়', 
-        icon: Smartphone, 
+
         color: 'bg-green-500',
         steps: [
           'উপায় অ্যাপে লগইন করুন',
@@ -88,7 +90,7 @@ const PaymentDetails = ({ paymentMethod, onBack, onProceed }: PaymentDetailsProp
       },
       [PaymentMethods.BANK]: { 
         label: 'ব্যাংক', 
-        icon: Building, 
+     
         color: 'bg-gray-500',
         steps: [
           'আপনার ব্যাংক অ্যাপ/ইন্টারনেট ব্যাংকিং এ লগইন করুন',
@@ -101,7 +103,7 @@ const PaymentDetails = ({ paymentMethod, onBack, onProceed }: PaymentDetailsProp
       },
       [PaymentMethods.UCB]: { 
         label: 'ইউসিবি', 
-        icon: CreditCard, 
+   
         color: 'bg-orange-500',
         steps: [
           'ইউসিবি অ্যাপ/ইন্টারনেট ব্যাংকিং এ লগইন করুন',
@@ -148,7 +150,7 @@ const PaymentDetails = ({ paymentMethod, onBack, onProceed }: PaymentDetailsProp
   }
 
   const config = getMethodConfig(paymentMethod.methodName);
-  const IconComponent = config.icon;
+
 
   return (
     <div className="space-y-6">
@@ -171,8 +173,8 @@ const PaymentDetails = ({ paymentMethod, onBack, onProceed }: PaymentDetailsProp
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className={`p-3 rounded-full ${config.color} text-white`}>
-                  <IconComponent className="h-6 w-6" />
+                <div className={`p-3 rounded-full  text-white`}>
+             {getIcons(config.label)}
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground text-lg">{config.label}</h3>
